@@ -1,10 +1,16 @@
 from scripts.spark_session import get_spark_session
+def analyze_data(enriched_df):
+    try:
+        print("\n📊 Top 10 Customers by Total Sales:")
+        sales_per_customer = enriched_df.groupBy("customer_id").sum("amount")
+        sales_per_customer.show(10)
 
+        print("\n📊 Top 10 Products by Total Sales:")
+        sales_per_product = enriched_df.groupBy("product_id").sum("amount")
+        sales_per_product.show(10)
 
-def analyze_data(df):
-    # Example: total sales per category
-    sales_by_category = df.groupBy("category").sum("total_value")
-    sales_by_category.show()
+        print("✅ Analysis completed.")
 
-    # Save final transformed dataset
-    df.write.mode("overwrite").csv("output/transformed/enriched_data", header=True)
+    except Exception as e:
+        print(f"❌ Error during analysis: {e}")
+        raise
